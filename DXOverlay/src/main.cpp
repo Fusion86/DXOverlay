@@ -64,6 +64,10 @@ void DrawRect(int x, int y, int w, int h, DWORD color) {
 	g_d3ddev->Clear(1, &BarRect, D3DCLEAR_TARGET | D3DCLEAR_TARGET, color, 0, 0);
 }
 
+void Update() {
+	// Handle keypresses etc
+}
+
 void Render() {
 	g_d3ddev->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_ARGB(255, 0, 0, 0), 1.0f, 0);
 
@@ -80,9 +84,7 @@ void Render() {
 LRESULT WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	switch (msg) {
 		case WM_PAINT:
-			{
-				DwmExtendFrameIntoClientArea(hWnd, &g_margin);
-			}
+			DwmExtendFrameIntoClientArea(hWnd, &g_margin);
 			break;
 
 		case WM_DESTROY:
@@ -95,7 +97,6 @@ LRESULT WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
 	// Find target window
-	g_rc;
 	g_hTargetWnd = FindWindow(NULL, TARGET_WINDOW_NAME);
 	if (g_hTargetWnd) {
 		UpdateWHM();
@@ -173,13 +174,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				// hTargetWnd is active
 
 				// TODO: Only call when needed (after resize or after window is 'un-minimized' after being minimized)
-				ShowWindow(g_hWnd, SW_SHOW);
-				SetWindowLong(g_hWnd, GWL_EXSTYLE, GetWindowLong(g_hWnd, GWL_EXSTYLE) | WS_EX_LAYERED | WS_EX_TRANSPARENT);
-				SetLayeredWindowAttributes(g_hWnd, RGB(0, 0, 0), 0, ULW_COLORKEY);
-				SetLayeredWindowAttributes(g_hWnd, 0, 255, LWA_ALPHA);
+				// Currently disabled because it flickers the screen
+				//ShowWindow(g_hWnd, SW_SHOW);
+				//SetWindowLong(g_hWnd, GWL_EXSTYLE, GetWindowLong(g_hWnd, GWL_EXSTYLE) | WS_EX_LAYERED | WS_EX_TRANSPARENT);
+				//SetLayeredWindowAttributes(g_hWnd, RGB(0, 0, 0), 0, ULW_COLORKEY);
+				//SetLayeredWindowAttributes(g_hWnd, 0, 255, LWA_ALPHA);
 
 				UpdateWHM();
 				SetWindowPos(g_hWnd, HWND_TOPMOST, g_rc.left, g_rc.top, g_width, g_height, NULL);
+				Update();
 				Render();
 			}
 			else {
